@@ -1,0 +1,215 @@
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1"> 
+        <title>Dashboard A8</title>
+        
+        <!-- Importar Google Charts -->
+        <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script> 
+        <link rel="stylesheet" href="style.css">
+    </head>
+    <body>
+        <h1>Visualización Gráfica De Datos | Ejercicio B</h1>
+
+        <div class="dashboard-wrapper"> 
+            <!-- Panel 1 (Mapa Pobreza General - 2008) -->
+            <div id="p1" class="panel">
+                <h2>Porcentaje de población en situación de pobreza por Estado (2008)</h2>
+                <div id="regions_div" style="width: 100%; height: 400px;"></div>
+            </div> 
+            
+            <!-- Panel 2 (Antes Panel 3 - ColumnChart: Comparativa Pobreza General 2008 vs 2018) -->
+            <div id="p2" class="panel">
+                <h2>Comparativa de Contraste: Pobreza General por Entidad (2008 vs 2018)</h2>
+                <div id="column_chart_comparison" style="width: 100%; height: 450px;"></div>
+            </div> 
+
+            <!-- Panel 3 (Antes Panel 4 - Mapa Pobreza Extrema - 2008 en Naranjas) -->
+            <div id="p3" class="panel">
+                <h2>Población en Situación de Pobreza Extrema en Miles (2008)</h2>
+                <div id="regions_div_extrema_2008" style="width: 100%; height: 400px;"></div>
+            </div> 
+
+            <!-- Panel 4 / Panel Final - ColumnChart Pobreza Extrema: 2008, 2014 y 2018 -->
+            <div id="p4" class="panel">
+                <h2>Comparativa de Pobreza Extrema en Miles de Personas (2008, 2014, 2018)</h2>
+                <div id="column_chart_extrema_comparison" style="width: 100%; height: 500px;"></div>
+            </div> 
+        </div>
+
+        <script type="text/javascript">
+            // Cargar paquetes 'geochart' y 'corechart'
+            google.charts.load('current', {'packages':['geochart', 'corechart']});
+            google.charts.setOnLoadCallback(drawCharts);
+
+            function drawCharts() {
+                // Escala de azules para pobreza general
+                var blueColorAxis = {
+                    colors: ['#e0f2fe', '#93c5fd', '#3b82f6', '#1d4ed8', '#1e3a8a']
+                };
+
+                // Escala de naranjas para pobreza extrema
+                var orangeColorAxis = {
+                    colors: ['#ffedd5', '#fed7aa', '#f97316', '#c2410c', '#7c2d12']
+                };
+
+                // --- MAPA 1: POBREZA GENERAL 2008 ---
+                var data2008 = google.visualization.arrayToDataTable([
+                    ['State', 'Porcentaje de Pobreza'],
+                    ['MX-AGU', 37.6], ['MX-BCN', 26.0], ['MX-BCS', 21.4], ['MX-CAM', 45.9],
+                    ['MX-COA', 32.7], ['MX-COL', 27.4], ['MX-CHP', 77.0], ['MX-CHH', 32.1],
+                    ['MX-DUR', 48.4], ['MX-GUA', 44.1], ['MX-GRO', 68.4], ['MX-HID', 55.2],
+                    ['MX-JAL', 36.7], ['MX-MEX', 43.6], ['MX-MIC', 55.5], ['MX-MOR', 48.8],
+                    ['MX-NAY', 41.7], ['MX-NLE', 21.4], ['MX-OAX', 61.8], ['MX-PUE', 64.6],
+                    ['MX-QUE', 35.2], ['MX-ROO', 33.7], ['MX-SLP', 50.9], ['MX-SIN', 32.4],
+                    ['MX-SON', 27.1], ['MX-TAB', 53.8], ['MX-TAM', 33.8], ['MX-TLA', 59.6],
+                    ['MX-VER', 51.2], ['MX-YUC', 47.0], ['MX-ZAC', 50.1], ['MX-DIF', 27.6]
+                ]);
+                var chart2008 = new google.visualization.GeoChart(document.getElementById('regions_div'));
+                chart2008.draw(data2008, { region: 'MX', resolution: 'provinces', colorAxis: blueColorAxis });
+
+
+                // --- PANEL 2: COLUMNCHART COMPARATIVO GENERAL ---
+                var dataComparison = google.visualization.arrayToDataTable([
+                    ['Entidad Federativa', '2008', '2018'],
+                    ['Aguascalientes', 37.6, 26.2], ['Baja California', 26.0, 23.3], ['Baja California Sur', 21.4, 18.1],
+                    ['Campeche', 45.9, 46.2], ['Coahuila', 32.7, 22.5], ['Colima', 27.4, 30.9],
+                    ['Chiapas', 77.0, 76.4], ['Chihuahua', 32.1, 26.3], ['Ciudad de México', 27.6, 30.6],
+                    ['Durango', 48.4, 37.3], ['Guanajuato', 44.1, 43.4], ['Guerrero', 68.4, 66.5],
+                    ['Hidalgo', 55.2, 43.8], ['Jalisco', 36.7, 28.4], ['México', 43.6, 42.7],
+                    ['Michoacán', 55.5, 46.0], ['Morelos', 48.8, 50.8], ['Nayarit', 41.7, 34.8],
+                    ['Nuevo León', 21.4, 14.5], ['Oaxaca', 61.8, 66.4], ['Puebla', 64.6, 58.9],
+                    ['Querétaro', 35.2, 27.6], ['Quintana Roo', 33.7, 27.6], ['San Luis Potosí', 50.9, 43.4],
+                    ['Sinaloa', 32.4, 30.9], ['Sonora', 27.1, 28.2], ['Tabasco', 53.8, 53.6],
+                    ['Tamaulipas', 33.8, 35.1], ['Tlaxcala', 59.6, 48.4], ['Veracruz', 51.2, 61.8],
+                    ['Yucatán', 47.0, 40.8], ['Zacatecas', 50.1, 46.8]
+                ]);
+                var columnChart = new google.visualization.ColumnChart(document.getElementById('column_chart_comparison'));
+                columnChart.draw(dataComparison, {
+                    title: 'Comparativa del porcentaje de pobreza por entidad: 2008 vs 2018',
+                    chartArea: { width: '85%', height: '70%' },
+                    colors: ['#93c5fd', '#1d4ed8'],
+                    hAxis: { title: 'Entidad Federativa', textStyle: { fontSize: 10 }, slantedText: true, slantedTextAngle: 45 },
+                    vAxis: { title: 'Porcentaje (%)', minValue: 0, maxValue: 80 },
+                    legend: { position: 'top', alignment: 'center' }
+                });
+
+
+                // --- PANEL 3: MAPA POBREZA EXTREMA 2008 ---
+                var dataExtrema2008 = google.visualization.arrayToDataTable([
+                    ['State', 'Miles de personas'],
+                    ['MX-AGU', 48.3], ['MX-BCN', 104.1], ['MX-BCS', 16.4], ['MX-CAM', 97.2],
+                    ['MX-COA', 83.7], ['MX-COL', 11.0], ['MX-CHP', 1850.8], ['MX-CHH', 230.5],
+                    ['MX-DUR', 187.2], ['MX-GUA', 430.8], ['MX-GRO', 1098.2], ['MX-HID', 401.3],
+                    ['MX-JAL', 321.0], ['MX-MEX', 1046.5], ['MX-MIC', 668.9], ['MX-MOR', 153.1],
+                    ['MX-NAY', 66.2], ['MX-NLE', 118.7], ['MX-OAX', 1079.0], ['MX-PUE', 1088.1],
+                    ['MX-QUE', 97.6], ['MX-ROO', 98.3], ['MX-SLP', 394.8], ['MX-SIN', 128.9],
+                    ['MX-SON', 115.2], ['MX-TAB', 348.5], ['MX-TAM', 157.2], ['MX-TLA', 109.9],
+                    ['MX-VER', 1276.4], ['MX-YUC', 170.9], ['MX-ZAC', 140.4], ['MX-DIF', 189.1]
+                ]);
+                var chartExtrema2008 = new google.visualization.GeoChart(document.getElementById('regions_div_extrema_2008'));
+                chartExtrema2008.draw(dataExtrema2008, { region: 'MX', resolution: 'provinces', colorAxis: orangeColorAxis });
+
+
+                // --- PANEL 4: COLUMNCHART POBREZA EXTREMA (2008, 2014, 2018) ---
+                var dataExtremaComparison = google.visualization.arrayToDataTable([
+                    ['Entidad Federativa', '2008', '2014', '2018'],
+                    ['Aguascalientes', 48.3, 26.7, 15.6],
+                    ['Baja California', 104.1, 105.5, 59.3],
+                    ['Baja California Sur', 16.4, 29.5, 12.6],
+                    ['Campeche', 97.2, 99.2, 93.0],
+                    ['Coahuila', 83.7, 109.7, 44.5],
+                    ['Colima', 11.0, 24.4, 18.2],
+                    ['Chiapas', 1850.8, 1654.4, 1623.3],
+                    ['Chihuahua', 230.5, 200.3, 99.8],
+                    ['Ciudad de México', 189.1, 150.5, 153.3],
+                    ['Durango', 187.2, 93.0, 40.4],
+                    ['Guanajuato', 430.8, 317.6, 253.3],
+                    ['Guerrero', 1098.2, 868.1, 971.4],
+                    ['Hidalgo', 401.3, 350.5, 181.5],
+                    ['Jalisco', 321.0, 253.2, 244.5],
+                    ['México', 1046.5, 1206.9, 865.7],
+                    ['Michoacán', 668.9, 641.9, 284.4],
+                    ['Morelos', 153.1, 149.3, 147.0],
+                    ['Nayarit', 66.2, 102.1, 76.2],
+                    ['Nuevo León', 118.7, 66.7, 25.2],
+                    ['Oaxaca', 1079.0, 1130.3, 951.8],
+                    ['Puebla', 1088.1, 991.3, 551.9],
+                    ['Querétaro', 97.6, 76.1, 41.2],
+                    ['Quintana Roo', 98.3, 107.6, 59.8],
+                    ['San Luis Potosí', 394.8, 258.5, 207.6],
+                    ['Sinaloa', 128.9, 155.8, 82.3],
+                    ['Sonora', 115.2, 95.6, 80.6],
+                    ['Tabasco', 348.5, 260.3, 302.5],
+                    ['Tamaulipas', 157.2, 151.6, 121.8],
+                    ['Tlaxcala', 109.9, 82.6, 41.7],
+                    ['Veracruz', 1276.4, 1370.5, 1457.9],
+                    ['Yucatán', 170.9, 223.2, 147.1],
+                    ['Zacatecas', 140.4, 89.4, 54.4]
+                ]);
+
+                var columnChartExtrema = new google.visualization.ColumnChart(document.getElementById('column_chart_extrema_comparison'));
+                columnChartExtrema.draw(dataExtremaComparison, {
+                    title: 'Evolución de Pobreza Extrema en Miles de Personas (2008, 2014, 2018)',
+                    chartArea: { width: '85%', height: '70%' },
+                    colors: ['#fdba74', '#f97316', '#c2410c'],
+                    hAxis: { 
+                        title: 'Entidad Federativa', 
+                        textStyle: { fontSize: 10 }, 
+                        slantedText: true, 
+                        slantedTextAngle: 45 
+                    },
+                    vAxis: { 
+                        title: 'Miles de personas', 
+                        minValue: 0 
+                    },
+                    legend: { position: 'top', alignment: 'center' }
+                });
+            }
+        </script>
+
+        <style> 
+            body {
+                text-align: center;
+                background-color: #ececec;
+                font-family: 'Helvetica', sans-serif;
+            }
+
+            h2 {
+                margin: 0px 0px 10px 0px;
+                font-size: 1.1rem;
+            }
+
+            .dashboard-wrapper {
+                margin: auto;
+                max-width: 920px;
+                display: grid;
+                grid-template-columns: 1fr 1fr 1fr;
+                grid-column-gap: 15px;
+                grid-row-gap: 15px;
+            }
+
+            .dashboard-wrapper .panel {
+                text-align: left;
+                background-color: #fff;
+                border: 1px solid #d3d3d3;
+                box-shadow: 0 0 4px 1px rgba(143,143,143,.2);
+                padding: 15px;
+            }
+
+            /* Apilado vertical */
+            .dashboard-wrapper #p1.panel, 
+            .dashboard-wrapper #p2.panel, 
+            .dashboard-wrapper #p3.panel, 
+            .dashboard-wrapper #p4.panel {
+                grid-column: 1 / 4;
+            }
+            /* Modo Respoonsive*/
+            @media screen and (max-width: 1024px) {
+                .dashboard-wrapper .panel {
+                    grid-column: 1 / 4;
+                }   
+            }
+        </style>
+    </body>
+</html>
